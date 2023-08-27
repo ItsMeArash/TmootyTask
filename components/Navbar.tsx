@@ -8,6 +8,8 @@ import InputBase from "@mui/material/InputBase";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -51,6 +53,20 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Navbar() {
+  const router = useRouter();
+  const [searchValue, setSearchValue] = useState("");
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value);
+  };
+
+  const handleEnterKey = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      router.push(`/?search=${searchValue}`);
+    }
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -74,7 +90,10 @@ export default function Navbar() {
               Home
             </Typography>
           </Link>
-          <Link href="/newpost" style={{ textDecoration: "none", color: "white" }}>
+          <Link
+            href="/newpost"
+            style={{ textDecoration: "none", color: "white" }}
+          >
             <Typography
               variant="h6"
               noWrap
@@ -92,6 +111,9 @@ export default function Navbar() {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
+              value={searchValue}
+              onChange={handleSearchChange}
+              onKeyDown={handleEnterKey}
             />
           </Search>
         </Toolbar>

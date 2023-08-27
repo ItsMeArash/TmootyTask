@@ -3,18 +3,23 @@ import axios from "axios";
 import { Post } from "@/types";
 import PostCard from "@/components/PostCard";
 import { Pagination, Stack } from "@mui/material";
+import { useRouter } from "next/router";
+import Search from "./Search";
 
 const Landing = () => {
   const [posts, setPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 12;
 
+  const { query } = useRouter();
+
   useEffect(() => {
     const fetchInterval = setInterval(() => {
       fetchPosts();
     }, 10000);
     fetchPosts();
-    return () => clearInterval(fetchInterval)
+
+    return () => clearInterval(fetchInterval);
   }, [currentPage]);
 
   const fetchPosts = async () => {
@@ -28,9 +33,17 @@ const Landing = () => {
       console.error("Error fetching posts:", error);
     }
   };
+  if (query.search && typeof query.search === "string")
+    return <Search searchQuery={query.search} />;
+
   return (
     <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "2rem" }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        marginTop: "2rem",
+      }}
     >
       <ul
         style={{
@@ -48,7 +61,7 @@ const Landing = () => {
           </li>
         ))}
       </ul>
-      <div style={{marginTop: "2rem", marginBottom: "1rem"}}>
+      <div style={{ marginTop: "2rem", marginBottom: "1rem" }}>
         <Stack spacing={2}>
           <Pagination
             count={Math.ceil(100 / postsPerPage)}

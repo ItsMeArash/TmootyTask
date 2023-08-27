@@ -31,3 +31,7 @@ export interface FormValues {
 export interface PostProps {
   postData: Post
 }
+
+export interface SearchProps {
+  searchQuery: string;
+}
